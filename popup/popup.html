@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=400">
+    <title>Terms Guard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <span class="logo-name">Terms Guard</span>
+                    <span class="logo-tagline">T&C Risk Scanner</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn-icon" id="settingsBtn" title="API Key Settings">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path
+                            d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42">
+                        </path>
+                    </svg>
+                </button>
+                <button class="btn-icon" id="exportReport" title="Export Report" style="display:none;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                </button>
+                <button class="btn-icon" id="clearHistory" title="Clear History">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path
+                            d="m19 6-.867 12.142A2 2 0 0 1 16.138 20H7.862a2 2 0 0 1-1.995-1.858L5 6m5 0V4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Scan Button -->
+        <div class="scan-section">
+            <button class="scan-btn" id="scanBtn">
+                <div class="scan-btn-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </div>
+                <span class="scan-btn-text">Scan This Page</span>
+            </button>
+            <p class="scan-hint" id="scanHint">Click to analyze Terms & Conditions on the current page</p>
+        </div>
+
+        <!-- Results Section (hidden initially) -->
+        <div class="results" id="results" style="display: none;">
+
+            <!-- Quick Verdict Card -->
+            <div class="verdict-card" id="verdictCard">
+                <div class="verdict-icon" id="verdictIcon">🤔</div>
+                <div class="verdict-body">
+                    <div class="verdict-text" id="verdictText">—</div>
+                    <div class="verdict-meta" id="verdictMeta"></div>
+                </div>
+            </div>
+
+            <!-- Trust Score -->
+            <div class="section trust-section" id="trustSection" style="display:none;">
+                <div class="section-header">
+                    <span class="section-icon">🛡️</span>
+                    <span class="section-title">Trust Score</span>
+                    <span class="trust-tier-badge" id="trustTierBadge"></span>
+                </div>
+                <div class="section-body" id="trustBody"></div>
+            </div>
+
+            <!-- Rights at Risk -->
+            <div class="section rights-section" id="rightsSection" style="display:none;">
+                <div class="section-header">
+                    <span class="section-icon">⚠️</span>
+                    <span class="section-title">Rights at Risk</span>
+                    <span class="section-badge rights-badge" id="rightsBadge">0</span>
+                </div>
+                <div class="section-body" id="rightsBody"></div>
+            </div>
+
+            <!-- Score Gauge -->
+            <div class="score-card" id="scoreCard">
+                <div class="score-gauge">
+                    <svg viewBox="0 0 120 120" class="gauge-svg">
+                        <circle cx="60" cy="60" r="52" class="gauge-bg" />
+                        <circle cx="60" cy="60" r="52" class="gauge-fill" id="gaugeFill" />
+                    </svg>
+                    <div class="score-number" id="scoreNumber">0</div>
+                </div>
+                <div class="score-info">
+                    <div class="score-grade" id="scoreGrade">—</div>
+                    <div class="score-count" id="scoreCount">0 risks detected</div>
+                </div>
+            </div>
+
+            <!-- Readability Score -->
+            <div class="section readability-section" id="readabilitySection">
+                <div class="section-header">
+                    <span class="section-icon">📖</span>
+                    <span class="section-title">Readability Score</span>
+                </div>
+                <div class="section-body">
+                    <div class="readability-gauge" id="readabilityGauge">
+                        <div class="readability-score" id="readabilityScore">—</div>
+                        <div class="readability-level" id="readabilityLevel">—</div>
+                    </div>
+                    <div class="readability-desc" id="readabilityDesc"></div>
+                    <div class="readability-stats" id="readabilityStats"></div>
+                </div>
+            </div>
+
+            <!-- Permission Detector -->
+            <div class="section permissions-section" id="permissionsSection" style="display:none;">
+                <div class="section-header">
+                    <span class="section-icon">🔐</span>
+                    <span class="section-title">Permissions Detected</span>
+                    <span class="section-badge" id="permissionsBadge">0</span>
+                </div>
+                <div class="section-body" id="permissionsBody"></div>
+            </div>
+
+            <!-- Industry Comparison -->
+            <div class="section comparison-section" id="comparisonSection">
+                <div class="section-header">
+                    <span class="section-icon">📊</span>
+                    <span class="section-title">Industry Comparison</span>
+                </div>
+                <div class="section-body" id="comparisonBody"></div>
+            </div>
+
+            <!-- Summary -->
+            <div class="section summary-section" id="summarySection">
+                <div class="section-header">
+                    <span class="section-icon">📝</span>
+                    <span class="section-title">Summary</span>
+                </div>
+                <div class="section-body" id="summaryBody"></div>
+            </div>
+
+            <!-- Category Breakdown -->
+            <div class="section categories-section" id="categoriesSection">
+                <div class="section-header">
+                    <span class="section-icon">📊</span>
+                    <span class="section-title">Risk Breakdown</span>
+                </div>
+                <div class="section-body" id="categoriesBody"></div>
+            </div>
+
+            <!-- Flagged Clauses -->
+            <div class="section risks-section" id="risksSection">
+                <div class="section-header">
+                    <span class="section-icon">🚩</span>
+                    <span class="section-title">Flagged Clauses</span>
+                    <span class="section-badge" id="risksBadge">0</span>
+                </div>
+                <div class="section-body" id="risksBody"></div>
+            </div>
+
+            <!-- AI Simplified Clauses -->
+            <div class="section ai-section" id="aiSection" style="display:none;">
+                <div class="section-header">
+                    <span class="section-icon">🤖</span>
+                    <span class="section-title">AI Simplified</span>
+                    <button class="ai-simplify-btn" id="aiSimplifyBtn">✨ Simplify</button>
+                </div>
+                <div class="section-body" id="aiBody"></div>
+            </div>
+
+            <!-- Severity Intelligence -->
+            <div class="section severity-section" id="severitySection" style="display:none;">
+                <div class="section-header">
+                    <span class="section-icon">🧠</span>
+                    <span class="section-title">Severity Intelligence</span>
+                </div>
+                <div class="section-body" id="severityBody"></div>
+            </div>
+
+            <!-- Dark Patterns -->
+            <div class="section darkpatterns-section" id="darkPatternsSection" style="display:none;">
+                <div class="section-header">
+                    <span class="section-icon">🕶️</span>
+                    <span class="section-title">Dark Patterns</span>
+                    <span class="section-badge dp-badge" id="dpBadge">0</span>
+                </div>
+                <div class="section-body" id="dpBody"></div>
+            </div>
+
+            <!-- Privacy Tips -->
+            <div class="section tips-section" id="tipsSection" style="display:none;">
+                <div class="section-header">
+                    <span class="section-icon">💡</span>
+                    <span class="section-title">Privacy Tips</span>
+                </div>
+                <div class="section-body" id="tipsBody"></div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState">
+            <div class="empty-icon">🛡️</div>
+            <div class="empty-title">No Scan Yet</div>
+            <div class="empty-desc">Navigate to a page with Terms & Conditions and click "Scan This Page" to analyze it
+                for hidden risks.</div>
+        </div>
+
+        <!-- History Section -->
+        <div class="section history-section" id="historySection" style="display: none;">
+            <div class="section-header">
+                <span class="section-icon">🕐</span>
+                <span class="section-title">Recent Scans</span>
+            </div>
+            <div class="section-body" id="historyBody"></div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <span>Terms Guard v1.0</span>
+            <span class="footer-dot">•</span>
+            <span>Protecting your rights</span>
+        </footer>
+    </div>
+
+    <!-- API Key Settings Modal -->
+    <div class="modal-overlay" id="settingsModal" style="display:none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>🔑 Gemini API Key</h3>
+                <button class="modal-close" id="modalClose">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">Enter your Google Gemini API key to enable AI clause simplification. Get a free
+                    key from <a href="https://aistudio.google.com/apikey" target="_blank">Google AI Studio</a>.</p>
+                <div class="modal-input-group">
+                    <input type="password" class="modal-input" id="apiKeyInput"
+                        placeholder="Paste your API key here..." />
+                    <button class="modal-save-btn" id="apiKeySave">Save Key</button>
+                </div>
+                <div class="modal-status" id="apiKeyStatus"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>
